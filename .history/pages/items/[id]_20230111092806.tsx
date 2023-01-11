@@ -323,11 +323,14 @@ const ItemDetail: NextPage<{ detail: Item }> = ({ detail }) => {
               <option>{arrFlavor[2]}</option>
               <option>{arrFlavor[3]}</option>
               <option>{arrFlavor[4]}</option>
+<<<<<<< HEAD
+=======
               {/* <option>{detail.flavor[0]}</option>
               <option>{detail.flavor[1]}</option>
               <option>{detail.flavor[2]}</option>
               <option>{detail.flavor[3]}</option>
               <option>{detail.flavor[4]}</option> */}
+>>>>>>> main
             </select>
           </div>
           <div className={styles.quantity}>
