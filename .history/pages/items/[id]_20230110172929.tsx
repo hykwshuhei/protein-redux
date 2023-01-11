@@ -70,9 +70,19 @@ const ItemDetail: NextPage<{ detail: Item }> = ({ detail }) => {
   const [userId, setUserId] = React.useState('');
   const [flavor, setFlavor] = React.useState('');
 
+  console.log(`detail.flavor:${detail.flavor}`)
+  console.log(`detail.flavor:${typeof detail.flavor}`)
+
   const flavor2:any = detail.flavor;
   let strChangeFlavor = flavor2.replace(/{|"|\\|}|/g, "");
+  console.log(`strChangeFlavor:${strChangeFlavor}`)
+
   const arrFlavor = strChangeFlavor.split(',');
+  console.log(`arrFlavor:${arrFlavor}`)
+  console.log(`arrFlavor:${typeof arrFlavor}`)
+
+
+
 
   //　数量変更
   const addHandlerNext = (sub: number) => {

@@ -84,17 +84,17 @@ const ItemDisplay: NextPage<Props> = (data3) => {
       //   setItemData(data[0])
       // }
       setResource(
-        `/api/items?flavor_like=${flavor}&category=${category}`
+        `${process.env.NEXT_PUBLIC_PROTEIN}/api/items?flavor_like=${flavor}&category=${category}`
       );
 
     } else if (flavor) {
       setResource(
-        `/api/items?flavor_like=${flavor}`
+        `${process.env.NEXT_PUBLIC_PROTEIN}/api/items?flavor_like=${flavor}`
       );
     } else {
       setResource(
         // 'api/supabase'
-        `/api/items`
+        `${process.env.NEXT_PUBLIC_PROTEIN}/api/items`
       );
     }
   }, [flavor, category]);

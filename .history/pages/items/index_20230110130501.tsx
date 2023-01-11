@@ -44,7 +44,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   return {
     props: {
-      data3: data3
+      data3
     },
   };
 };
@@ -53,7 +53,6 @@ const ItemDisplay: NextPage<Props> = (data3) => {
   const router = useRouter();
 
   console.log(data3)
-  console.log(data3.data3)
 
   const [resource, setResource] = useState('api/supabase');
   const [count, setCount] = useState(1);
@@ -61,6 +60,7 @@ const ItemDisplay: NextPage<Props> = (data3) => {
   const [flavor, setFlavor] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [showchatbot, setShowChatbot] = useState(false);
+  const [itemData, setItemData] = useState([])
 
 
   //検索、絞り込み、商品詳細のクリック以外の何もしない時間が5秒あればチャットボット出現させる
@@ -84,17 +84,17 @@ const ItemDisplay: NextPage<Props> = (data3) => {
       //   setItemData(data[0])
       // }
       setResource(
-        `/api/items?flavor_like=${flavor}&category=${category}`
+        `${process.env.NEXT_PUBLIC_PROTEIN}/api/items?flavor_like=${flavor}&category=${category}`
       );
 
     } else if (flavor) {
       setResource(
-        `/api/items?flavor_like=${flavor}`
+        `${process.env.NEXT_PUBLIC_PROTEIN}/api/items?flavor_like=${flavor}`
       );
     } else {
       setResource(
         // 'api/supabase'
-        `/api/items`
+        `${process.env.NEXT_PUBLIC_PROTEIN}/api/items`
       );
     }
   }, [flavor, category]);
@@ -122,7 +122,7 @@ const ItemDisplay: NextPage<Props> = (data3) => {
     });
   };
 
-  const searchData = data3.data3.filter((item: Item) => {
+  const searchData = data.filter((item: Item) => {
     return (
       searchQuery.length === 0 || item.name.match(searchQuery)
       // 検索BOXに値がない場合のmap、searchQueryに入っている値とdb.jsonのnameと合致する商品のみ表示するmap

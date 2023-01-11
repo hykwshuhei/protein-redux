@@ -18,42 +18,14 @@ import TooltipButton from '../../components/tooltipButton';
 import Footer from '../layout/footer';
 import { supabase } from "../../utils/supabase";
 import React from 'react';
-import { useRouter } from 'next/router';
-import { GetServerSideProps } from 'next';
-
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
-type Props = {
-  data3: [];
-};
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const category = context.query.category;
-  const flavor = context.query.flavor;
-
-  let query = supabase.from('items').select();
-  if (flavor) {
-    query = query.like('flavor', `%${flavor}%`);
-  }
-  if (category) {
-    query = query.eq('category', category);
-  }
-  const data2 = await query;
-  const data3 = data2.data!;
-
-  return {
-    props: {
-      data3: data3
-    },
-  };
-};
-
-const ItemDisplay: NextPage<Props> = (data3) => {
-  const router = useRouter();
-
-  console.log(data3)
-  console.log(data3.data3)
+const ItemDisplay: NextPage = () => {
+  // async function data2(){
+  //     let a =await supabase.from("items").select("*")
+  //     console.log(a.data!)
+  // }
 
   const [resource, setResource] = useState('api/supabase');
   const [count, setCount] = useState(1);
@@ -61,6 +33,7 @@ const ItemDisplay: NextPage<Props> = (data3) => {
   const [flavor, setFlavor] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [showchatbot, setShowChatbot] = useState(false);
+  const [itemData, setItemData] = useState([])
 
 
   //検索、絞り込み、商品詳細のクリック以外の何もしない時間が5秒あればチャットボット出現させる
@@ -77,24 +50,23 @@ const ItemDisplay: NextPage<Props> = (data3) => {
   //ポストする
   useEffect(() => {
     if (category) {
-      // console.log(category)
-      // async () => {
-      //   let { data }: any = await supabase.from("items").select("*").eq("category", category)
-      //   console.log(data)
-      //   setItemData(data[0])
-      // }
-      setResource(
-        `/api/items?flavor_like=${flavor}&category=${category}`
-      );
+      async () => {
+        console.log(category)
+        let { data }: any = await supabase.from('items').select("*").eq("category", category)
+        setItemData(data[0])
+      }
+      // setResource(
+      //   `${process.env.NEXT_PUBLIC_PROTEIN}/api/items?flavor_like=${flavor}&category=${category}`
+      // );
 
     } else if (flavor) {
       setResource(
-        `/api/items?flavor_like=${flavor}`
+        `${process.env.NEXT_PUBLIC_PROTEIN}/api/items?flavor_like=${flavor}`
       );
     } else {
       setResource(
-        // 'api/supabase'
-        `/api/items`
+        'api/supabase'
+        // `${process.env.NEXT_PUBLIC_PROTEIN}/api/items`
       );
     }
   }, [flavor, category]);
@@ -104,30 +76,35 @@ const ItemDisplay: NextPage<Props> = (data3) => {
   if (error) return <div>Failed to Load</div>;
   if (!data) return <div>Loading...</div>;
 
+
   // 種類検索イベント
   const categoryHandler = (e: ChangeEvent<HTMLSelectElement>) => {
     setCategory(e.target.value);
-    router.push({
-      pathname: '/items',
-      query: { category: e.target.value, flavor: flavor },
-    });
+    console.log(category)
   };
 
   // フレーバー検索イベント
   const flavorHandler = (e: ChangeEvent<HTMLSelectElement>) => {
     setFlavor(e.target.value);
-    router.push({
-      pathname: '/items',
-      query: { category: category, flavor: e.target.value },
-    });
   };
 
-  const searchData = data3.data3.filter((item: Item) => {
+  console.log(itemData)
+  let searchData;
+  if(!data){
+  searchData = itemData.filter((item: Item) => {
     return (
       searchQuery.length === 0 || item.name.match(searchQuery)
       // 検索BOXに値がない場合のmap、searchQueryに入っている値とdb.jsonのnameと合致する商品のみ表示するmap
     );
-  });
+  })
+}else{
+  searchData = data.filter((item: Item) => {
+    return (
+      searchQuery.length === 0 || item.name.match(searchQuery)
+      // 検索BOXに値がない場合のmap、searchQueryに入っている値とdb.jsonのnameと合致する商品のみ表示するmap
+    );
+  })
+};
 
   const totalCount = searchData.length;
   const pageSize = 12;

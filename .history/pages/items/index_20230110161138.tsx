@@ -34,7 +34,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   let query = supabase.from('items').select();
   if (flavor) {
-    query = query.like('flavor', `%${flavor}%`);
+    query = query.eq('flavor', flavor);
+    console.log(`query:${JSON.stringify(query)}`)
+    Object.keys(query).forEach(function (key) {
+      console.log('key:', key);
+      console.log('query:', query);
+    });
   }
   if (category) {
     query = query.eq('category', category);
