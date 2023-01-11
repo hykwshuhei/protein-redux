@@ -13,15 +13,7 @@ export const getServerSideProps: GetServerSideProps = async (
   context
 ) => {
   const cookies = context.req.cookies;
-
-  console.log(cookies)
-  console.log(typeof cookies)
-
-  for (let property in cookies) {
-    if (property !== "id") {
-      delete cookies[property];
-    }
-  }
+  
 
   const subscriptionCart = await supabase.from("subscriptionCart").select("*").eq("userId", cookies.id);
   const subscriptionCart3 = subscriptionCart.data!;
