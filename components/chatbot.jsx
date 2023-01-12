@@ -120,9 +120,13 @@ export default function ChatBotComponent(props) {
   // cookie取得【始まり】
   useEffect(() => {
     const cookie = document.cookie;
-    const userId = cookie.slice(3);
+    let userId = '';
+    if (document.cookie.includes('; __stripe_mid=')) {
+      userId = cookie.slice(3);
+    } else {
+      userId = cookie.slice(-1);
+    }
     const id = (Number(userId));
-    console.log(id)
     setUserId(id);
   }, []);
   // cookie取得【終わり】
