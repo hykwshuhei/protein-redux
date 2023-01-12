@@ -76,7 +76,7 @@ const ItemDetail: NextPage<{ detail: Item }> = ({ detail }) => {
   const [userId, setUserId] = React.useState('');
   const [flavor, setFlavor] = React.useState('');
 
-  const flavor2:any = detail.flavor;
+  const flavor2: any = detail.flavor;
   let strChangeFlavor = flavor2.replace(/{|"|\\|}|/g, "");
   const arrFlavor = strChangeFlavor.split(',');
 
@@ -147,7 +147,12 @@ const ItemDetail: NextPage<{ detail: Item }> = ({ detail }) => {
   // cookie取得【始まり】
   useEffect(() => {
     const user = document.cookie;
-    const userId = user.slice(3);
+    let userId = '';
+    if (document.cookie.includes('; __stripe_mid=')) {
+      userId = user.slice(3);
+    } else {
+      userId = user.slice(-1);
+    }
     setUserId(userId);
   }, []);
   // cookie取得【終わり】
@@ -244,7 +249,7 @@ const ItemDetail: NextPage<{ detail: Item }> = ({ detail }) => {
       //   }
       // )
       // .then(() => {
-        router.push(`/items/subscription`);
+      router.push(`/items/subscription`);
       // });
     }
   };
