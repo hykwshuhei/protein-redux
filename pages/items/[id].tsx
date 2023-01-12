@@ -168,18 +168,27 @@ const ItemDetail: NextPage<{ detail: Item }> = ({ detail }) => {
   // }, [count]);
   // localstrageへ保存【終わり】
 
+
   const handler = async () => {
-    // 数量0の場合はカートへ入れない
-    // if (count === 0) {
-    //   return;
     if (!document.cookie) {
       localStorage.setItem(
         carts.itemId as any,
         JSON.stringify(cartsForStrage)
       );
       router.push('/cart');
-    }
-    else {
+    } else if (document.cookie.includes('; __stripe_mid=')) {
+      localStorage.setItem(
+        carts.itemId as any,
+        JSON.stringify(cartsForStrage)
+      );
+      router.push('/cart');
+    } else if (document.cookie.includes('__stripe_mid=')) {
+      localStorage.setItem(
+        carts.itemId as any,
+        JSON.stringify(cartsForStrage)
+      );
+      router.push('/cart');
+    } else {
       await supabase.from('carts').insert({
         userId,
         itemId,
@@ -188,7 +197,29 @@ const ItemDetail: NextPage<{ detail: Item }> = ({ detail }) => {
         flavor,
         price,
         countity,
-      }); // 入れたい("テーブル名")と({カラム名})
+      });
+      // const handler = async () => {
+      //   // 数量0の場合はカートへ入れない
+      //   // if (count === 0) {
+      //   //   return;
+      //   if (!document.cookie) {
+      //     localStorage.setItem(
+      //       carts.itemId as any,
+      //       JSON.stringify(cartsForStrage)
+      //     );
+      //     router.push('/cart');
+      //   }
+      //   else {
+      //     await supabase.from('carts').insert({
+      //       userId,
+      //       itemId,
+      //       imageUrl,
+      //       name,
+      //       flavor,
+      //       price,
+      //       countity,
+      //     });
+      // 入れたい("テーブル名")と({カラム名})
       // fetch(`${process.env.NEXT_PUBLIC_PROTEIN_DATA}/carts`, {
       //   method: 'POST',
       //   headers: {
