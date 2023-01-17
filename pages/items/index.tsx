@@ -20,21 +20,13 @@ import { supabase } from "../../utils/supabase";
 import React from 'react';
 import { useRouter } from 'next/router';
 import { GetServerSideProps } from 'next';
-
+import { store } from '../../redux/store'
+import { Provider } from "react-redux"
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
-
-const ItemDisplay: NextPage = (data3:any) => {
+const ItemDisplay: NextPage = (data3: any) => {
   const router = useRouter();
-  // async function data2(){
-  //     let a =await supabase.from("items").select("*")
-  //     console.log(a.data!)
-  // }
-
-
-
-
 
   const [resource, setResource] = useState(
     ''
@@ -57,33 +49,12 @@ const ItemDisplay: NextPage = (data3:any) => {
 
   const inputref = useRef<HTMLInputElement>();
 
-  //ポストする
-  // useEffect( () => {
-  //   if (category) {
-  //     setResource(
-  //       `${process.env.NEXT_PUBLIC_PROTEIN}/api/items?flavor_like=${flavor}&category=${category}`
-  //     );
-  //   } else if (flavor) {
-  //     setResource(
-  //       `${process.env.NEXT_PUBLIC_PROTEIN}/api/items?flavor_like=${flavor}`
-  //     );
-  //   } else {
-  //     setResource(
-  //       `${process.env.NEXT_PUBLIC_PROTEIN}/api/items`
-  //       );
-  //   }
-  // }, [flavor, category]);
-
-  // const { data, error } = useSWR(`/api/supabase`, fetcher);
-  // if (error) return <div>Failed to Load</div>;
-  // if (!data) return <div>Loading...</div>;
-
   // 種類検索イベント
   const categoryHandler = (e: ChangeEvent<HTMLSelectElement>) => {
     setCategory(e.target.value);
     router.push({
       pathname: '/items',
-      query: { category: e.target.value,flavor: flavor },
+      query: { category: e.target.value, flavor: flavor },
     });
   };
 
@@ -93,7 +64,7 @@ const ItemDisplay: NextPage = (data3:any) => {
     setFlavor(e.target.value);
     router.push({
       pathname: '/items',
-      query: { category: category,flavor: e.target.value },
+      query: { category: category, flavor: e.target.value },
     });
   };
 
@@ -112,7 +83,7 @@ const ItemDisplay: NextPage = (data3:any) => {
   if (flavor || (category && count >= 2)) {
     value = searchData.slice(0, pageSize);
   }
-  else if(totalCount <=7){
+  else if (totalCount <= 7) {
     value = searchData.slice(0, pageSize);
   }
   else {
@@ -169,7 +140,10 @@ const ItemDisplay: NextPage = (data3:any) => {
         </section>
 
         {/* Chatbotコンポーネント */}
-        <div>{showchatbot && <TooltipButton />}</div>
+
+        <Provider store={store}>
+          <div>{showchatbot && <TooltipButton />}</div>
+        </Provider>
 
         <div className={styles.background}>
           <p className={styles.titlesCenter}>
@@ -252,7 +226,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const flavor = context.query.flavor;
 
   let query = supabase.from('items').select();
-  
+
   if (flavor) {
     query = query.like('flavor', `%${flavor}%`);
   }
@@ -264,7 +238,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   return {
     props: {
-       data3:data3
+      data3: data3
     },
   };
 };

@@ -4,12 +4,18 @@ import ChatBotItem from './chatBotItem';
 import styles from '../styles/chatbot.module.css';
 import ImageDisplay from './imageDisplay';
 import { supabase } from "../utils/supabase"; // supabaseをコンポーネントで使うときはかく
+import { useSelector, useDispatch } from "react-redux";
+import { setId } from "../redux/chatSlice";
 
 
 // チャットボットのコンポーネント
 export default function ChatBotComponent(props) {
   const [userId, setUserId] = useState(0);
   const [userDB, setUserDB] = useState({});
+
+  const stateId = useSelector((state) => state.chatUserId.id);
+  console.log(stateId, '@@@')
+  const dispatch = useDispatch();
 
   //直でデータ入れてしまってます
   const dataTraining = [
@@ -128,14 +134,15 @@ export default function ChatBotComponent(props) {
     }
     const id = (Number(userId));
     setUserId(id);
+    dispatch(setId(Number(id)))
   }, []);
   // cookie取得【終わり】
 
   // dbからuserId取得【始まり】
   useEffect(() => {
     async function fetchData() {
-      if (userId !== 0) {
-        let { data } = await supabase.from("users").select().eq("id", userId);
+      if (stateId !== 0) {
+        let { data } = await supabase.from("users").select().eq("id", stateId);
         // const res = await fetch(`${process.env.NEXT_PUBLIC_PROTEIN_DATA}/users/${userId}`);
         // const user = await res.json();
         // const user = data[0];  
@@ -143,7 +150,7 @@ export default function ChatBotComponent(props) {
       }
     }
     fetchData();
-  }, [userId]);
+  }, [stateId]);
   // dbからuserId取得【終わり】
 
   //レンダリングを遅延させるカスタムフック
@@ -161,7 +168,8 @@ export default function ChatBotComponent(props) {
 
   return (
     <>
-      {userId !== 0 ?
+      {/* {userId !== 0 ? */}
+      {stateId !== 0 ?
         <div>
           {!waiting &&
             <ChatBot
