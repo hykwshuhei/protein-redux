@@ -15,7 +15,7 @@ import { supabase } from '../../utils/supabase'; // supabaseをコンポーネ�
 import { store } from '../../redux/store'
 import { Provider } from "react-redux"
 import { useSelector, useDispatch } from "react-redux";
-import ItemDetail from "../../components/ItemDetail";
+import ItemDetail from "../../components/itemDetail";
 
 
 export const getStaticPaths: GetStaticPaths = async () => {
