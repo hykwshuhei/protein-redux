@@ -13,6 +13,7 @@ export const getServerSideProps: GetServerSideProps = async (
   context
 ) => {
   const cookies = context.req.cookies;
+  
 
   const subscriptionCart = await supabase.from("subscriptionCart").select("*").eq("userId", cookies.id);
   const subscriptionCart3 = subscriptionCart.data!;
@@ -27,17 +28,17 @@ export const getServerSideProps: GetServerSideProps = async (
     cart.date = new Date().toLocaleString('ja-JP');
   });
 
-    const userId = Number(cookies.id)
-    const id = subscriptionCart2.id
-    const items = subscriptionCart2
+  const userId = Number(cookies.id)
+  const id = subscriptionCart2.id
+  const items = subscriptionCart2
 
 
 
-    await supabase.from('subscription').insert({
-      userId,
-      id,
-      items
-    });
+  await supabase.from('subscription').insert({
+    userId,
+    id,
+    items
+  });
 
   // await fetch(
   //   `${process.env.NEXT_PUBLIC_PROTEIN_DATA}/subscription`,
