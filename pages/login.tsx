@@ -5,7 +5,6 @@ import { useRouter } from 'next/router';
 import Link from 'next/link';
 import HeaderLogin from './layout/headerLogin';
 import Image from 'next/image';
-import ItemDisplay from './items';
 import { GetServerSideProps } from 'next';
 import { Item, User, Users } from './../types/type';
 import { supabase } from "../utils/supabase";
