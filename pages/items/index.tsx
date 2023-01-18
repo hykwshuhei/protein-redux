@@ -22,7 +22,7 @@ import { useRouter } from 'next/router';
 import { GetServerSideProps } from 'next';
 import { store } from '../../redux/store'
 import { Provider } from "react-redux"
-import ItemIndex from "../../components/itemIndex";
+import ItemIndex from "../../components/ItemIndex";
 
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
