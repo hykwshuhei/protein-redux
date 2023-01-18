@@ -20,7 +20,7 @@ const ItemDetail = ({ detail }: any) => {
     const router = useRouter();
     const [count, setCount] = React.useState(1);
     const [total, setTotal] = React.useState(detail.price);
-    const [userId, setUserId] = React.useState('');
+    // const [userId, setUserId] = React.useState('');
     const [flavor, setFlavor] = React.useState('');
 
     const flavor2: any = detail.flavor;
@@ -39,6 +39,10 @@ const ItemDetail = ({ detail }: any) => {
             setTotal(total - sub);
         }
     };
+
+    const userId = useSelector((state: any) => state.persistedReducer.id);
+    const idDispatch = useDispatch();
+    console.log(userId, '@@@');
 
     const stateCount = useSelector((state: any) => state.counter.value);
     const dispatch = useDispatch();
@@ -82,7 +86,7 @@ const ItemDetail = ({ detail }: any) => {
 
     // カートへ追加【始まり】
     const carts = {
-        userId: Number(userId),
+        userId: userId,
         itemId: detail.id,
         imageUrl: detail.imageUrl,
         name: detail.name,
@@ -107,14 +111,14 @@ const ItemDetail = ({ detail }: any) => {
     // cookie取得【始まり】
     useEffect(() => {
         dispatch(reset());
-        const user = document.cookie;
-        let userId = '';
-        if (document.cookie.includes('; __stripe_mid=')) {
-            userId = user.slice(3, 4);
-        } else {
-            userId = user.slice(-1);
-        }
-        setUserId(userId);
+        // const user = document.cookie;
+        // let userId = '';
+        // if (document.cookie.includes('; __stripe_mid=')) {
+        //     userId = user.slice(3, 4);
+        // } else {
+        //     userId = user.slice(-1);
+        // }
+        // setUserId(userId);
     }, []);
     // cookie取得【終わり】
 

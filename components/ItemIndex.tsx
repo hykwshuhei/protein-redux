@@ -1,3 +1,4 @@
+//pages/index　コンポーネント
 import Link from 'next/link';
 import { NextPage } from 'next';
 import styles from '../styles/items_index.module.css';
