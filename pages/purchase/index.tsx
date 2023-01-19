@@ -4,9 +4,13 @@ import styles from '../../styles/purchase.module.css';
 import { GetServerSideProps } from 'next';
 import Header from '../layout/header';
 import Footer from '../layout/footer';
-import { Item,User } from '../../types/type';
+import { Item, User } from '../../types/type';
 import { supabase } from "../../utils/supabase";
 import React from 'react';
+import { store, persistor } from '../../redux/store';
+import { PersistGate } from 'redux-persist/integration/react';
+import { Provider } from "react-redux"
+
 
 export const getServerSideProps: GetServerSideProps = async ({
   req,
@@ -15,9 +19,9 @@ export const getServerSideProps: GetServerSideProps = async ({
   const cookie = cookies.id
   //userの情報を取得
   const user2 = await supabase.from("users").select().eq("id", cookies.id);
- let user = user2.data![0];
+  let user = user2.data![0];
 
- //userの情報取得（fetchの部分）
+  //userの情報取得（fetchの部分）
   // await fetch(
   //   `${process.env.NEXT_PUBLIC_PROTEIN_DATA}/users?id=${cookies.id}`
   // );
@@ -38,7 +42,7 @@ export const getServerSideProps: GetServerSideProps = async ({
     props: {
       user: user,
       carts: carts,
-      cookie:cookie,
+      // cookie: cookie,
     },
   };
 };
@@ -46,15 +50,12 @@ export const getServerSideProps: GetServerSideProps = async ({
 export default function PurchaseDisplay({
   user,
   carts,
-  cookie,
+  // cookie,
 }: {
   user: User;
   carts: Item;
-  cookie:number;
-
+  // cookie: number;
 }) {
-  // const {user,carts} = props
-
   return (
     <>
       <div className={styles.container}>
@@ -64,7 +65,11 @@ export default function PurchaseDisplay({
           <title>ご注文内容確認</title>
           <meta name="turbolinks-visit-control" />
         </Head>
-        <ItemData user={user} carts={carts} cookie={cookie} />
+        <Provider store={store}>
+          <PersistGate loading={null} persistor={persistor}>
+            <ItemData user={user} carts={carts} />
+          </PersistGate>
+        </Provider>
       </div>
       <Footer />
     </>

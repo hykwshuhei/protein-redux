@@ -7,26 +7,28 @@ import React, { useState } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
 import { Users, Users2, Users3, User, Item } from '../types/type';
 import { supabase } from '../utils/supabase';
+import { useSelector, useDispatch } from "react-redux";
+
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY as string
 );
+
 const ItemData: React.FunctionComponent<{
   user: User;
   carts: Item;
-  cookie:number;
-}> = ({ user, carts,cookie }) => {
+  // cookie:number;
+}> = ({ user, carts }) => {
   const router = useRouter();
+  const userId = useSelector((state: any) => state.persistedReducer.id);
 
   carts.forEach((cart: Item) => {
     cart.date = new Date().toLocaleString('ja-JP');
   });
 
-console.log(cookie)
-  const userId = user.id;
   const items = carts;
-//  const cart:any = items.forEach(element => console.log(element));
-// console.log(cart)
+  //  const cart:any = items.forEach(element => console.log(element));
+  // console.log(cart)
   // const purchaseHistories = {
   //   userId: user.id,
   //   items: carts,
@@ -36,19 +38,19 @@ console.log(cookie)
   const handler = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     //purchaseHistoriesに情報をPOST(supabase)
-    await supabase.from('purchaseHistories').insert({userId,items}).then(() => {
+    await supabase.from('purchaseHistories').insert({ userId, items }).then(() => {
 
-    //purchaseHistoriesに情報をPOST(fetch)
-    // fetch(
-    //   `${process.env.NEXT_PUBLIC_PROTEIN_DATA}/purchaseHistories`,
-    //   {
-    //     method: 'POST',
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //     },
-    //     body: JSON.stringify(purchaseHistories),
-    //   }
-    // )
+      //purchaseHistoriesに情報をPOST(fetch)
+      // fetch(
+      //   `${process.env.NEXT_PUBLIC_PROTEIN_DATA}/purchaseHistories`,
+      //   {
+      //     method: 'POST',
+      //     headers: {
+      //       'Content-Type': 'application/json',
+      //     },
+      //     body: JSON.stringify(purchaseHistories),
+      //   }
+      // )
       deleteCarts(event);
       router.push('/purchase/purchased');
     });
@@ -62,22 +64,9 @@ console.log(cookie)
   ) => {
     // const data = { deleted: true };
     event.preventDefault();
-     //カート内の情報を消去(supabase)
-    await supabase.from('carts').delete().eq("userId",cookie);
-
-    //カート内の情報を消去（fetch）
-    // const data = {};
-    // carts.forEach((cart: Item) => {
-    //   fetch(`${process.env.NEXT_PUBLIC_PROTEIN_DATA}/carts/${cart.id}`, {
-    //     method: 'DELETE',
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //     },
-    //     body: JSON.stringify(data),
-    //   });
-    // });
+    //カート内の情報を消去(supabase)
+    await supabase.from('carts').delete().eq("userId", userId);
   };
-  // カート内の商品を消去[終わり]
 
   // 合計金額を算出する処理[始まり]
   const priceArray: number[] = [];

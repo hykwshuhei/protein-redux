@@ -20,9 +20,10 @@ import { supabase } from "../../utils/supabase";
 import React from 'react';
 import { useRouter } from 'next/router';
 import { GetServerSideProps } from 'next';
-import { store } from '../../redux/store'
+import { store, persistor } from '../../redux/store';
+import { PersistGate } from 'redux-persist/integration/react';
 import { Provider } from "react-redux"
-import ItemIndex from "../../components/itemIndex";
+import ItemIndex from "../../components/ItemIndex";
 
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -48,10 +49,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 };
 
 
-const index: NextPage = ({data3}: any) => {
+const index: NextPage = ({ data3 }: any) => {
   return (
     <Provider store={store}>
-      <ItemIndex data3={data3} />
+      <PersistGate loading={null} persistor={persistor}>
+        <ItemIndex data3={data3} />
+      </PersistGate>
     </Provider>
   )
 }

@@ -12,7 +12,8 @@ import { useRouter } from 'next/router';
 import { Item, Event } from '../../types/type';
 import Footer from '../layout/footer';
 import { supabase } from '../../utils/supabase'; // supabaseをコンポーネントで使うときはかく
-import { store } from '../../redux/store'
+import { store, persistor } from '../../redux/store'
+import { PersistGate } from 'redux-persist/integration/react';
 import { Provider } from "react-redux"
 import { useSelector, useDispatch } from "react-redux";
 import ItemDetail from "../../components/itemDetail";
@@ -52,9 +53,11 @@ export const getStaticProps: GetStaticProps = async ({
 const Something: NextPage<{ detail: Item }> = ({ detail }) => {
   return (
     <Provider store={store}>
-      <ItemDetail detail={detail}/>
+      <PersistGate loading={null} persistor={persistor}>
+        <ItemDetail detail={detail} />
+      </PersistGate>
     </Provider >
-    );
+  );
 };
 
 export default Something;

@@ -163,7 +163,7 @@ export default function ChatBotComponent(props) {
   }
 
   // 遅延させるm秒指定
-  const waiting = useDelay(300);
+  const waiting = useDelay(1000);
 
 
   return (
