@@ -13,7 +13,7 @@ export default function ChatBotComponent(props) {
   const [userId, setUserId] = useState(0);
   const [userDB, setUserDB] = useState({});
 
-  const stateId = useSelector((state) => state.chatUserId.id);
+  const stateId = useSelector((state) => state.persistedReducer.id);
   console.log(stateId, '@@@')
   const dispatch = useDispatch();
 

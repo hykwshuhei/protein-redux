@@ -11,6 +11,8 @@ import { Item, User, Users } from './../types/type';
 import { supabase } from "../utils/supabase";
 import { useSelector, useDispatch } from "react-redux";
 import { catchId } from "../redux/userIdSlice"
+import { deliteItem } from "../redux/itemsSlice";
+
 
 export default function UserLogin() {
     const router = useRouter();
@@ -18,28 +20,34 @@ export default function UserLogin() {
     const [password, setPassword] = useState('');
     const [visible, setVisible] = useState(false);
     const [localData, setLocalData] = useState([]);
-    const [userId, setUserId] = useState(0);
+    // const [userId, setUserId] = useState(0);
 
-    const stateUserId = useSelector((state: any) => state.userId.id);
+    const stateUserId = useSelector((state: any) => state.persistedReducer.id);
     const dispatch = useDispatch();
     console.log(stateUserId, 'stateUserId');
 
+    const stateItems = useSelector((state: any) => state.persistedItemsReducer.items);
+    const itemsDispatch = useDispatch();
+    console.log(stateItems)
+
+    const arrCopy = [...stateItems];
+
     // Local Storageから商品データ取得
-    useEffect(() => {
-        const collection = Object.keys(localStorage).map((key) => {
-            let keyJson = JSON.stringify(key);
-            return {
-                key: JSON.parse(keyJson),
-                value: JSON.parse(localStorage.getItem(key) as string),
-            };
-        });
-        setLocalData(collection as React.SetStateAction<never[]>);
-    }, []);
+    // useEffect(() => {
+    //     const collection = Object.keys(localStorage).map((key) => {
+    //         let keyJson = JSON.stringify(key);
+    //         return {
+    //             key: JSON.parse(keyJson),
+    //             value: JSON.parse(localStorage.getItem(key) as string),
+    //         };
+    //     });
+    //     setLocalData(collection as React.SetStateAction<never[]>);
+    // }, []);
 
     //"ally-supports-cache"などを除外 (Local Storageの中の商品情報以外を削除)
-    const filteredData = localData.filter((object: any) => {
-        return object.key == object.value.itemId;
-    });
+    // const filteredData = localData.filter((object: any) => {
+    //     return object.key == object.value.itemId;
+    // });
 
     // ユーザーIDの取得&POST(onSubmitのタイミングで発火)
     const postUserdata = async () => {
@@ -79,17 +87,24 @@ export default function UserLogin() {
                     console.log(id, '###');
                     dispatch(catchId(id));
                     console.log(stateUserId, 'dispatch');
-                    if (filteredData) {
-                        filteredData.forEach(async (data: any) => {
-                            data.value.userId = await postUserdata();
+                    if (arrCopy) {
+                        arrCopy.forEach(async (data: any) => {
+                            let number = await postUserdata();
+                            // Object.defineProperty(data, `${i}`, {
+                            //     writable: true
+                            // });
+                            // let i = await postUserdata();
+                            // Object.assign(data, { userId: i });
 
-                            let userId = data.value.userId;
-                            let itemId = data.value.itemId;
-                            let imageUrl = data.value.imageUrl;
-                            let name = data.value.name;
-                            let flavor = data.value.flavor;
-                            let price = data.value.price;
-                            let countity = data.value.countity;
+                            let userId = number;
+                            let itemId = data.itemId;
+                            let imageUrl = data.imageUrl;
+                            let name = data.name;
+                            let flavor = data.flavor;
+                            let price = data.price;
+                            let countity = data.countity;
+
+                            console.log(number, userId, "data.userId");
 
                             await supabase.from('carts').insert({
                                 userId,
@@ -98,8 +113,11 @@ export default function UserLogin() {
                                 name,
                                 flavor,
                                 price,
+                                countity
                             });
+                            itemsDispatch(deliteItem(data));
                         })
+                        // localStorage.clear();
                     }
                     router.push('/items');
                 }

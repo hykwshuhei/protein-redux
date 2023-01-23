@@ -17,11 +17,13 @@ import Footer from '../pages/layout/footer';
 import { supabase } from "../utils/supabase";
 import React from 'react';
 import { useRouter } from 'next/router';
-import { GetServerSideProps } from 'next';
+import { catchId } from "../redux/userIdSlice";
+import { useDispatch } from "react-redux";
 
 
 const ItemIndex = (data3: any) => {
     const router = useRouter();
+    const dispatch = useDispatch();
 
     const [resource, setResource] = useState('');
     const [count, setCount] = useState(1);
@@ -29,6 +31,20 @@ const ItemIndex = (data3: any) => {
     const [flavor, setFlavor] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
     const [showchatbot, setShowChatbot] = useState(false);
+
+    // cookie取得【始まり】 ※なぜかredux-persistのstateが更新されてしまう為　クッキーからid取得
+    useEffect(() => {
+        const cookie = document.cookie;
+        let userId = '';
+        if (document.cookie.includes('; __stripe_mid=')) {
+            userId = cookie.slice(3, 4);
+        } else {
+            userId = cookie.slice(-1);
+        }
+        const id = (Number(userId));
+        dispatch(catchId(Number(id)))
+    }, []);
+    // cookie取得【終わり】
 
     //検索、絞り込み、商品詳細のクリック以外の何もしない時間が5秒あればチャットボット出現させる
     useEffect(() => {
@@ -132,7 +148,7 @@ const ItemIndex = (data3: any) => {
                 </section>
 
                 {/* Chatbotコンポーネント */}
-                    <div>{showchatbot && <TooltipButton />}</div>
+                <div>{showchatbot && <TooltipButton />}</div>
 
                 <div className={styles.background}>
                     <p className={styles.titlesCenter}>

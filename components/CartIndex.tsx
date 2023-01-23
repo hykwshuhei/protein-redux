@@ -9,33 +9,52 @@ import Footer from '../pages/layout/footer';
 import { User, Item, Item2 } from '../types/type';
 import { supabase } from "../utils/supabase";
 import { useSelector, useDispatch } from "react-redux";
+import { deliteItem } from "../redux/itemsSlice";
+import { catchId } from "../redux/userIdSlice";
 
 
 const CartIndex = ({ carts }) => {
     const userId = useSelector((state: any) => state.persistedReducer.id);
-    console.log(userId, "cart")
-    
+    const dispatch = useDispatch();
+
+    const stateItems = useSelector((state: any) => state.persistedItemsReducer.items);
+    const itemsDispatch = useDispatch();
+
     const [localData, setLocalData] = useState([]);
     const router = useRouter();
 
+    // cookie取得【始まり】 ※なぜかredux-persistのstateが更新されてしまう為　クッキーからid取得
+  useEffect(() => {
+    const cookie = document.cookie;
+    let userId = '';
+    if (document.cookie.includes('; __stripe_mid=')) {
+      userId = cookie.slice(3, 4);
+    } else {
+      userId = cookie.slice(-1);
+    }
+    const id = (Number(userId));
+    dispatch(catchId(Number(id)))
+  }, []);
+  // cookie取得【終わり】
+
     // Local Storageからカートに追加した商品データ取得
-    useEffect(() => {
-        if (carts === null) {
-            const collection = Object.keys(localStorage).map((key) => {
-                let keyJson = JSON.stringify(key);
-                return {
-                    key: JSON.parse(keyJson),
-                    value: JSON.parse(localStorage.getItem(key) as string),
-                };
-            });
-            setLocalData(collection as any);
-        }
-    }, []);
+    // useEffect(() => {
+    //     if (carts === null) {
+    //         const collection = Object.keys(localStorage).map((key) => {
+    //             let keyJson = JSON.stringify(key);
+    //             return {
+    //                 key: JSON.parse(keyJson),
+    //                 value: JSON.parse(localStorage.getItem(key) as string),
+    //             };
+    //         });
+    //         setLocalData(collection as any);
+    //     }
+    // }, []);
 
     //"ally-supports-cache" を除外 (Local Storageの中の商品情報以外を削除)
-    const filteredData: any = localData.filter((object: any) => {
-        return object.key == object.value.itemId;
-    });
+    // const filteredData: any = localData.filter((object: any) => {
+    //     return object.key == object.value.itemId;
+    // });
 
     // cartsの削除【始まり】
     async function deleteItem(cart: Item) {
@@ -49,8 +68,9 @@ const CartIndex = ({ carts }) => {
 
     // localDataの削除【始まり】
     function deleteItemID(data: Item) {
-        localStorage.removeItem(data.key);
-        router.reload();
+        itemsDispatch(deliteItem(data));
+        //     localStorage.removeItem(data.key);
+        //     router.reload();
     }
     // localDataの削除【終わり】
 
@@ -74,9 +94,9 @@ const CartIndex = ({ carts }) => {
     // localDataの合計【始まり】
     const priceArrayLocal: number[] = [];
 
-    filteredData.forEach((element: any) => {
+    stateItems.forEach((element: any) => {
         const multiPriceLocal =
-            element.value.price * element.value.countity;
+            element.price * element.countity;
         priceArrayLocal.push(multiPriceLocal);
     });
 
@@ -98,7 +118,7 @@ const CartIndex = ({ carts }) => {
     };
 
     const handlerWithLocal = () => {
-        if (filteredData.length < 1) {
+        if (stateItems.length < 1) {
             alert('商品一覧から商品を選んでカートに入れてください');
             router.push('/items');
         } else {
@@ -180,34 +200,34 @@ const CartIndex = ({ carts }) => {
                 ) : (
                     <div>
                         <section className={styles.cart_content}>
-                            {filteredData.map((data: any) => (
+                            {stateItems.map((data: any) => (
                                 <div
-                                    key={data.value.itemId}
+                                    key={data.itemId}
                                     className={styles.cart_content2}
                                 >
                                     <Image
                                         priority
                                         className={styles.cart_img}
-                                        src={data.value.imageUrl}
+                                        src={data.imageUrl}
                                         alt="商品画像"
                                         width={260}
                                         height={260}
                                     />
                                     <div className={styles.text_content}>
                                         <Link
-                                            href={`../items/${encodeURIComponent(data.value.itemId)}`}
+                                            href={`../items/${encodeURIComponent(data.itemId)}`}
                                             className={styles.a}
                                         >
-                                            <p>{data.value.name}</p>
+                                            <p>{data.name}</p>
                                         </Link>
                                         <p>
                                             <span className={styles.quantity}>数量</span>
-                                            {data.value.countity}個
+                                            {data.countity}個
                                         </p>
                                         <p>
                                             <span>価格(税込)</span>¥
                                             {(
-                                                data.value.price * data.value.countity
+                                                data.price * data.countity
                                             ).toLocaleString()}
                                         </p>
                                         <button
