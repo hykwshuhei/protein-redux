@@ -9,13 +9,16 @@ import { GetServerSideProps } from 'next';
 import { Item, User, Users } from './../types/type';
 import { supabase } from "../utils/supabase";
 import { Provider } from 'react-redux';
-import { store } from '../redux/store'
+import { store, persistor } from '../redux/store'
+import { PersistGate } from 'redux-persist/integration/react';
 import UserLogin from "../components/login";
 
 export default function lg() {
   return (
     <Provider store={store}>
-      <UserLogin />
+      <PersistGate loading={null} persistor={persistor}>
+        <UserLogin />
+      </PersistGate>
     </Provider>
   )
 }

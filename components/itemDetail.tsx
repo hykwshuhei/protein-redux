@@ -1,11 +1,6 @@
 import Image from 'next/image';
 import { NextPage } from 'next';
 import styles from '../styles/item_detail.module.css';
-import {
-    GetStaticPaths,
-    GetStaticProps,
-    GetStaticPropsContext,
-} from 'next';
 import React, { useEffect } from 'react';
 import Header from '../pages/layout/header';
 import { useRouter } from 'next/router';
@@ -14,6 +9,7 @@ import Footer from '../pages/layout/footer';
 import { supabase } from '../utils/supabase';
 import { useSelector, useDispatch } from "react-redux";
 import { increment, decrement, reset } from "../redux/counterSlice";
+import { catchItem } from "../redux/itemsSlice";
 
 
 const ItemDetail = ({ detail }: any) => {
@@ -21,11 +17,24 @@ const ItemDetail = ({ detail }: any) => {
     const [count, setCount] = React.useState(1);
     const [total, setTotal] = React.useState(detail.price);
     // const [userId, setUserId] = React.useState('');
-    const [flavor, setFlavor] = React.useState('');
 
     const flavor2: any = detail.flavor;
     let strChangeFlavor = flavor2.replace(/{|"|\\|}|/g, "");
     const arrFlavor = strChangeFlavor.split(',');
+
+    const [flavor, setFlavor] = React.useState(arrFlavor[0]);
+
+
+    const userId = useSelector((state: any) => state.persistedReducer.id);
+    console.log(userId, '@@@');
+
+    const stateItems = useSelector((state: any) => state.persistedItemsReducer.items);
+    const itemsDispatch = useDispatch();
+    console.log(stateItems, '@@@');
+
+    const stateCount = useSelector((state: any) => state.counter.value);
+    const dispatch = useDispatch();
+    console.log(stateCount, total, '@@@');
 
 
     //　数量変更
@@ -40,19 +49,10 @@ const ItemDetail = ({ detail }: any) => {
         }
     };
 
-    const userId = useSelector((state: any) => state.persistedReducer.id);
-    const idDispatch = useDispatch();
-    console.log(userId, '@@@');
-
-    const stateCount = useSelector((state: any) => state.counter.value);
-    const dispatch = useDispatch();
-    console.log(stateCount, total, '@@@');
-
     const clickHandlerNext = () => {
         // const nextCount = count + 1;
         // setCount(nextCount);
         dispatch(increment());
-        console.log(stateCount, 'increment')
         // setCount(stateCount);
 
         // const nextTotal = detail.price * nextCount;
@@ -69,7 +69,6 @@ const ItemDetail = ({ detail }: any) => {
         // }
         if (stateCount > 1) {
             dispatch(decrement());
-            console.log(stateCount, 'decrement')
             const prevTotal = detail.price * stateCount;
             setTotal(prevTotal);
             addHandlerPrev(detail.price);
@@ -125,10 +124,11 @@ const ItemDetail = ({ detail }: any) => {
 
     const handler = async () => {
         if (!document.cookie) {
-            localStorage.setItem(
-                carts.itemId as any,
-                JSON.stringify(cartsForStrage)
-            );
+            itemsDispatch(catchItem(cartsForStrage))
+            // localStorage.setItem(
+            //     carts.itemId as any,
+            //     JSON.stringify(cartsForStrage)
+            // );
             router.push('/cart');
         } else if (document.cookie.includes(`; id=`)) {
             await supabase.from('carts').insert({
@@ -153,10 +153,11 @@ const ItemDetail = ({ detail }: any) => {
             });
             router.push('/cart');
         } else if (document.cookie.includes('__stripe_mid=')) {
-            localStorage.setItem(
-                carts.itemId as any,
-                JSON.stringify(cartsForStrage)
-            );
+            itemsDispatch(catchItem(cartsForStrage))
+            // localStorage.setItem(
+            //     carts.itemId as any,
+            //     JSON.stringify(cartsForStrage)
+            // );
             router.push('/cart');
         } else {
             await supabase.from('carts').insert({
@@ -214,12 +215,17 @@ const ItemDetail = ({ detail }: any) => {
         preventDefault: () => void;
     }) => {
         e.preventDefault();
-        await supabase.from('favorites').insert({
-            userId,
-            itemIdFav,
-            id,
-        });
-        router.push('/users/favorite');
+        if (Number(userId) == 0) {
+            alert('ログイン後に追加可能です（会員登録してない方は会員登録をお願いします）');
+            router.push('/login');
+        } else {
+            await supabase.from('favorites').insert({
+                userId,
+                itemIdFav,
+                id,
+            });
+            router.push('/users/favorite');
+        }
     };
 
     return (
@@ -263,11 +269,6 @@ const ItemDetail = ({ detail }: any) => {
                             <option>{arrFlavor[2]}</option>
                             <option>{arrFlavor[3]}</option>
                             <option>{arrFlavor[4]}</option>
-                            {/* <option>{detail.flavor[0]}</option>
-                <option>{detail.flavor[1]}</option>
-                <option>{detail.flavor[2]}</option>
-                <option>{detail.flavor[3]}</option>
-              <option>{detail.flavor[4]}</option> */}
                         </select>
                     </div>
                     <div className={styles.quantity}>

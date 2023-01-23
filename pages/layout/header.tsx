@@ -2,19 +2,13 @@ import Link from 'next/link';
 import style from './header.module.css';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-
-// const logOut = () => {
-//   if (document.cookie !== '') {
-//     var date = new Date('1999-12-31T23:59:59Z');
-//     document.cookie = `id=;path=/;expires=${date.toUTCString()};`;
-//     alert('ログアウトしました');
-//   } else {
-//     alert('ログインをしてください');
-//   }
-// };
+import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
+import { useSelector, useDispatch } from "react-redux";
+import { catchId } from "../../redux/userIdSlice"
 
 export default function Header() {
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const logOut = () => {
     if (document.cookie == '') {
@@ -23,11 +17,13 @@ export default function Header() {
     } else if (document.cookie.includes(`; id=`)) {
       var date = new Date('1999-12-31T23:59:59Z');
       document.cookie = `id=;path=/;expires=${date.toUTCString()};`;
+      dispatch(catchId(0));
       alert('ログアウトしました');
     }
     else if (document.cookie.includes('; __stripe_mid=')) {
       var date = new Date('1999-12-31T23:59:59Z');
       document.cookie = `id=;path=/;expires=${date.toUTCString()};`;
+      dispatch(catchId(0));
       alert('ログアウトしました');
     } else if (document.cookie.includes('__stripe_mid=')) {
       alert('ログインをしてください');
@@ -35,6 +31,7 @@ export default function Header() {
     } else if (document.cookie !== '') {
       var date = new Date('1999-12-31T23:59:59Z');
       document.cookie = `id=;path=/;expires=${date.toUTCString()};`;
+      dispatch(catchId(0));
       alert('ログアウトしました');
     } else {
       alert('ログインをしてください');
@@ -99,14 +96,18 @@ export default function Header() {
 
       <div className={style.iconlist}>
         <div className={style.icon} onClick={moveToFavorite}>
-          <Image
+          <BookmarkBorderIcon
+            fontSize="large"
+          >
+          </BookmarkBorderIcon>
+          {/* <Image
             priority
             src="/images/fav.jpg"
             width={45}
             height={45}
             alt="favorite"
             className={style.iconHover}
-          />
+          /> */}
         </div>
         <div className={style.icon} onClick={moveToCart}>
           <Image
