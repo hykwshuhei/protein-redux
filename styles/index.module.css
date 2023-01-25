@@ -4,7 +4,7 @@
 
 .main {
   font-family: Helvetica;
-  background: rgba(253, 253, 253, 0.5);
+  /* background: rgba(253, 253, 253, 0.5); */
   -webkit-font-smoothing: antialiased;
 
   padding-left: 5%;

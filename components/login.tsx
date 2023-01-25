@@ -3,7 +3,7 @@ import style from '../styles/index.module.css';
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import HeaderLogin from '../pages/layout/headerLogin';
+import HeaderLogin from '../components/HeaderMaterialLogin';
 import Image from 'next/image';
 import ItemDisplay from './imageDisplay';
 import { GetServerSideProps } from 'next';
