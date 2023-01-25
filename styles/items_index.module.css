@@ -11,17 +11,19 @@
 
 .category1 {
   border-radius: 7px;
-  width: 200px;
-  height: 40px;
+  width: 150px;
+  height: 30px;
   background-color: rgb(243, 239, 239);
-  border: 3px solid #ffffff;
+  border: rgb(202, 202, 202) solid 3px;
   margin: 1% 5%;
+  text-align: center;
 }
 
 .searchList {
   background-color: rgb(243, 239, 239);
   padding-top: 2%;
   padding-bottom: 2%;
+  justify-content: center;
   display: flex;
 }
 
@@ -33,19 +35,23 @@
 .category2 {
   margin: 0 0 0 5%;
 }
+
 .all {
   background-color: black;
   padding-bottom: 10%;
 }
+
 .item {
   list-style: none;
 }
+
 .itemA {
   list-style: none;
   font-weight: bold;
 
   font-size: large;
 }
+
 .itemB {
   list-style: none;
   font-weight: bold;
@@ -85,25 +91,30 @@
   opacity: 0;
   position: absolute;
   left: 0;
-  content: ''; /*本来は、擬似要素に入るテキストなどを’’内に指定。今回はアンダーラインなので何も記載しない*/
+  content: '';
+  /*本来は、擬似要素に入るテキストなどを’’内に指定。今回はアンダーラインなので何も記載しない*/
   width: 100%;
   height: 11px;
-  background: linear-gradient(
-    transparent 20%,
-    #41d7fd,
-    rgb(0, 255, 166)
-  );
+  background: linear-gradient(transparent 20%,
+      #41d7fd,
+      rgb(0, 255, 166));
   line-height: 1;
-  bottom: -1px; /*アンダーラインが位置する、各リストの下端からの高さ　ヘッダーの下端に合わせています*/
-  visibility: hidden; /*ホバー前に、アンダーラインを可視化しない*/
+  bottom: -1px;
+  /*アンダーラインが位置する、各リストの下端からの高さ　ヘッダーの下端に合わせています*/
+  visibility: hidden;
+  /*ホバー前に、アンダーラインを可視化しない*/
   transition: 0.3s;
-  bottom: 7px; /*アンダーラインが現れ始める位置*/
+  bottom: 7px;
+  /*アンダーラインが現れ始める位置*/
 }
 
 .a:hover::after {
-  visibility: visible; /*ホバー後、アンダーラインを可視化する*/
-  opacity: 1; /*アンダーラインが透明な状態からアニメーションが開始され、ホバーを話して終了する際も、徐々に透明な状態に戻る。*/
-  transition: 0.3s; /*変形の時間*/
+  visibility: visible;
+  /*ホバー後、アンダーラインを可視化する*/
+  opacity: 1;
+  /*アンダーラインが透明な状態からアニメーションが開始され、ホバーを話して終了する際も、徐々に透明な状態に戻る。*/
+  transition: 0.3s;
+  /*変形の時間*/
   bottom: 1px;
 }
 
@@ -174,23 +185,17 @@
   padding: 1rem 3rem;
   color: rgb(8, 8, 8);
   border-radius: 100vh;
-  background-image: -webkit-gradient(
-    linear,
-    right top,
-    left top,
-    from(#5de1d6),
-    to(#1ed6ee)
-  );
-  background-image: -webkit-linear-gradient(
-    right,
-    #5de1d6 0%,
-    #1ed6ee 100%
-  );
-  background-image: linear-gradient(
-    to left,
-    #5de1d6 0%,
-    #1ed6ee 100%
-  );
+  background-image: -webkit-gradient(linear,
+      right top,
+      left top,
+      from(#5de1d6),
+      to(#1ed6ee));
+  background-image: -webkit-linear-gradient(right,
+      #5de1d6 0%,
+      #1ed6ee 100%);
+  background-image: linear-gradient(to left,
+      #5de1d6 0%,
+      #1ed6ee 100%);
   white-space: nowrap;
 }
 
@@ -203,10 +208,8 @@
 }
 
 .border {
-  background: linear-gradient(
-    transparent 60%,
-    rgb(167, 249, 119) 60%
-  );
+  background: linear-gradient(transparent 60%,
+      rgb(167, 249, 119) 60%);
 }
 
 .imgCenter {
@@ -235,17 +238,20 @@
 }
 
 .search_box {
-  display: inline-block; /* なくても大丈夫だけど、念の為 */
-  position: relative; /* 基準値とする */
+  display: inline-block;
+  /* なくても大丈夫だけど、念の為 */
+  position: relative;
+  /* 基準値とする */
   height: 5px;
 }
 
 .search_box input {
-  padding: 3px 0 3px 2em; /* アイコンを設置するため左の余白を多めに指定*/
+  padding: 3px 0 3px 2em;
+  /* アイコンを設置するため左の余白を多めに指定*/
   border: rgb(202, 202, 202) solid 3px;
   background-color: rgb(245, 245, 242);
   width: 25rem;
-  height: 45px;
+  height: 35px;
   border-radius: 260px;
   overflow: hidden;
 }

@@ -1,7 +1,7 @@
 import styles from '../../styles/users.new.module.css';
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
-import HeaderLogin from '../layout/headerLogin';
+import HeaderLogin from '../../components/HeaderMaterialLogin';
 import Footer from '../layout/footer';
 import { Item } from '../../types/type';
 import { User, Users, Users2 } from '../../types/type';
